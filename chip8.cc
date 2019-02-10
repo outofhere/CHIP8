@@ -103,7 +103,7 @@ void chip8::opcodeDecode(uint16_t opcode) {
         // Type: 5XY0
         // Explanation: Skips the next instruction if VX equals VY. (Usually the next instruction is a jump to skip a code block
         case 0x5000: {
-            printf ("[!] je(v%x, v%x) 0x4\n", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 8);
+            printf ("[!] je(v%x, v%x) 0x4\n", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
             if (V.at((opcode & 0x0F00) >> 8) == V.at((opcode & 0x00F0) >> 8)) {
                 pc += 0x4;
             } else {
@@ -124,7 +124,7 @@ void chip8::opcodeDecode(uint16_t opcode) {
         // Type: 7XNN
         // Explanation: Adds NN to VX. (Carry flag is not changed)
         case 0x7000: {
-            printf ("[!] add v%x, %#x\n");
+            printf ("[!] add v%x, %#x\n", (opcode & 0x0F00) >> 8, opcode & 0x00FF);
             V.at((opcode & 0x0F00) >> 8) += (uint8_t)(opcode & 0x00FF);
             pc += 2;
             break;
@@ -160,29 +160,35 @@ void chip8::opcodeDecode(uint16_t opcode) {
             uint8_t lastDigit = opcode & 0x000F;
             switch (lastDigit) {
                 case 0x0: {
-                    V.at((opcode & 0x0F00) >> 8) = V.at((opcode & 0x00F0) >> 8);
+                    printf ("OPCODE %x\n", (opcode & 0x00f0) >> 8);
+                    printf ("[!] mov v%x, v%x\n", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
+                    V.at((opcode & 0x0F00) >> 8) = V.at((opcode & 0x00F0) >> 4);
                     pc += 2;
                     break;
                 }
                 case 0x1: {
-                    V.at((opcode & 0x0F00) >> 8) | V.at((opcode & 0x00F0) >> 8);
+                    printf ("[!] or v%x, v%x\n", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
+                    V.at((opcode & 0x0F00) >> 8) |= V.at((opcode & 0x00F0) >> 4);
                     pc += 2;
                     break;
                 }
                 case 0x2: {
-                    V.at((opcode & 0x0F00) >> 8) & V.at((opcode & 0x00F0) >> 8);
+                    printf ("[!] and v%x, v%x\n", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
+                    V.at((opcode & 0x0F00) >> 8) &= V.at((opcode & 0x00F0) >> 4);
                     pc += 2;
                     break;
                 }
                 case 0x3: {
-                    V.at((opcode & 0x0F00) >> 8) ^ V.at((opcode & 0x00F0) >> 8);
+                    printf ("[!] xor v%x, v%x\n", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
+                    V.at((opcode & 0x0F00) >> 8) ^= V.at((opcode & 0x00F0) >> 4);
                     pc += 2;
                     break;
                 }
                 // (TODO) Fix this.
                 case 0x4: {
-                    uint8_t tmp = (V.at((opcode & 0x0F00) >> 8) != 0) ? V.at((opcode & 0x0F00) >> 8 : V.at((opcode & 0x00F0) >> 8;
-                    V.at((opcode & 0x0F00) >> 8) += V.at((opcode & 0x00F0) >> 8);
+                    printf ("[!] addc v%x, v%x\n", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
+                    uint8_t tmp = (V.at((opcode & 0x0F00) >> 8) != 0) ? V.at((opcode & 0x0F00) >> 8) : V.at((opcode & 0x00F0) >> 4);
+                    V.at((opcode & 0x0F00) >> 8) += V.at((opcode & 0x00F0) >> 4);
                     // If register overlaps, result is less than both of the operands.
                     if (V.at((opcode & 0x0F00) >> 8) < tmp) {
                         V.at(0xF) = 1;
@@ -193,12 +199,13 @@ void chip8::opcodeDecode(uint16_t opcode) {
                     break;
                 }
                 case 0x5: {
-                    if (V.at((opcode & 0x0F00) >> 8) < V.at((opcode & 0x00F0) >> 8)) {
+                    printf ("[!] subc v%x, v%x\n", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
+                    if (V.at((opcode & 0x0F00) >> 8) < V.at((opcode & 0x00F0) >> 4)) {
                         V.at(0xF) = 1;
                     } else {
                         V.at(0xF) = 0;
                     }
-                    V.at((opcode & 0x0F00) >> 8) -= V.at((opcode & 0x00F0) >> 8);
+                    V.at((opcode & 0x0F00) >> 8) -= V.at((opcode & 0x00F0) >> 4);
                     pc += 2;
                     break;
                 }

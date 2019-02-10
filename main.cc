@@ -51,14 +51,77 @@ Program 0x2:  Jumping over code if equal registers
 
 Program 0x3: Adding some values to registers
     console.memoryLayout[0x200] = 0x70;
-    console.memoryLayout[0x201] = 0x01;  // mov v0, 0x77
+    console.memoryLayout[0x201] = 0x01;  // mov v0, 0x01
     console.memoryLayout[0x202] = 0x70;
-    console.memoryLayout[0x203] = 0x02;  // mov v0, 0x77
+    console.memoryLayout[0x203] = 0x02;  // mov v0, 0x02
     console.memoryLayout[0x204] = 0x71;
-    console.memoryLayout[0x205] = 0x06;  // je(v1, v0) 0x4
+    console.memoryLayout[0x205] = 0x06;  // mov v1, 0x06
+
+Program 0x4: mov v0, v1
+    console.memoryLayout[0x200] = 0x70;
+    console.memoryLayout[0x201] = 0x01;  // mov v0, 0x01
+    console.memoryLayout[0x202] = 0x71;
+    console.memoryLayout[0x203] = 0x02;  // mov v1, 0x02
+    console.memoryLayout[0x204] = 0x80;
+    console.memoryLayout[0x205] = 0x10;  // mov v0, v1
+
+Program 0x5: or v0, v1
+    console.memoryLayout[0x200] = 0x70;
+    console.memoryLayout[0x201] = 0x01;  // mov v0, 0x01
+    console.memoryLayout[0x202] = 0x71;
+    console.memoryLayout[0x203] = 0x02;  // mov v1, 0x02
+    console.memoryLayout[0x204] = 0x80;
+    console.memoryLayout[0x205] = 0x11;  // or v0, v1
+
+Program 0x6: and v0, v1
+    console.memoryLayout[0x200] = 0x70;
+    console.memoryLayout[0x201] = 0x01;  // mov v0, 0x01
+    console.memoryLayout[0x202] = 0x71;
+    console.memoryLayout[0x203] = 0x02;  // mov v1, 0x02
+    console.memoryLayout[0x204] = 0x80;
+    console.memoryLayout[0x205] = 0x12;  // and v0, v1
+
+Program 0x7: xor v0, v1
+    console.memoryLayout[0x200] = 0x70;
+    console.memoryLayout[0x201] = 0x03;  // mov v0, 0x03
+    console.memoryLayout[0x202] = 0x71;
+    console.memoryLayout[0x203] = 0x02;  // mov v1, 0x02
+    console.memoryLayout[0x204] = 0x80;
+    console.memoryLayout[0x205] = 0x13;  // xor v0, v1
+
+Program 0x8: addc v0, v1
+    console.memoryLayout[0x200] = 0x70;
+    console.memoryLayout[0x201] = 0x01;  // mov v0, 0x01
+    console.memoryLayout[0x202] = 0x71;
+    console.memoryLayout[0x203] = 0xFF;  // mov v1, 0xFF
+    console.memoryLayout[0x204] = 0x80;
+    console.memoryLayout[0x205] = 0x14;  // addc v0, v1
+
+Program 0x9: subc v0, v1
+    console.memoryLayout[0x200] = 0x70;
+    console.memoryLayout[0x201] = 0x01;  // mov v0, 0x01
+    console.memoryLayout[0x202] = 0x71;
+    console.memoryLayout[0x203] = 0x02;  // mov v1, 0x02
+    console.memoryLayout[0x204] = 0x80;
+    console.memoryLayout[0x205] = 0x15;  // subc v0, v1
+
+Program 0xA: mov v0, v1
+    console.memoryLayout[0x200] = 0x70;
+    console.memoryLayout[0x201] = 0x01;  // mov v0, 0x01
+    console.memoryLayout[0x202] = 0x71;
+    console.memoryLayout[0x203] = 0x02;  // mov v1, 0x02
+    console.memoryLayout[0x204] = 0x80;
+    console.memoryLayout[0x205] = 0x10;  // mov v0, v1
+
 
 */
-    for (uint8_t i; i < 4; ++i) {
+    console.memoryLayout[0x200] = 0x70;
+    console.memoryLayout[0x201] = 0x01;  // mov v0, 0x01
+    console.memoryLayout[0x202] = 0x71;
+    console.memoryLayout[0x203] = 0x02;  // mov v1, 0x02
+    console.memoryLayout[0x204] = 0x80;
+    console.memoryLayout[0x205] = 0x15;  // subc v0, v1
+    for (uint8_t i; i < 3; ++i) {
         console.opcodeExecute();
     }
     return 0;
